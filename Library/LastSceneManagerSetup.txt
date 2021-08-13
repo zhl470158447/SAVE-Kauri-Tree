@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/SAVE kauri tree.unity
+  isLoaded: 1
+  isActive: 1
