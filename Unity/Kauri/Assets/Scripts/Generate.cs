@@ -27,7 +27,7 @@ public class Generate : MonoBehaviour
     [Header("Branch parameters")]
     public Vector3 startingNode = new Vector3(0, 0, 0);
     public float generationHeight = 5;
-    public float segmentLength=0.5f;
+    public float segmentLength=0.2f;
     public float killDistance=0.5f;
     public int numAttracionPoints = 400;
 
@@ -35,7 +35,7 @@ public class Generate : MonoBehaviour
     public bool generateRoots=true;
     public Vector3 startingNodeR = new Vector3(0, 0, 0);
     public float generationDepth = 5;
-    public float segmentLengthR = 0.5f;
+    public float segmentLengthR = 0.2f;
     public float killDistanceR = 0.5f;
     public int numAttracionPointsR = 400;
 
@@ -76,7 +76,7 @@ public class Generate : MonoBehaviour
             radius *= r;
             // 2 angles are generated from which a direction will be computed
             float alpha = Random.Range(0f, Mathf.PI);
-            float theta = Random.Range(0f, Mathf.PI * 2f);
+            float theta = Random.Range(0f, Mathf.PI);
 
             Vector3 pt = new Vector3(
                 radius * Mathf.Cos(theta) * Mathf.Sin(alpha),
@@ -114,7 +114,7 @@ public class Generate : MonoBehaviour
         GenerateAttractors(numAttracionPointsR, 5f);
         Limb baseBranch = new Limb(startingNode, startingNode + new Vector3(0, segmentLength, 0), new Vector3(0, segmentLength, 0), null);
         branches.Add(baseBranch);
-        growRoots();
+        growBranches();
     }
 
     // Update is called once per frame
