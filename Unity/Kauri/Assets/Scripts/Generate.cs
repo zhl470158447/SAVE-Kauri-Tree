@@ -76,7 +76,7 @@ public class Generate : MonoBehaviour
             attractionPointsRoots.Add(pt);
         }
     }
-    void GenerateAttractors(int n, float r)
+    void GenerateAttractorsBranches(int n, float r)
     {
         for (int i = 0; i < n; i++)
         {
@@ -155,6 +155,10 @@ public class Generate : MonoBehaviour
                     closest.attractors.Add(point);
                 }
             }
+            foreach(Vector3 point in pointsToRemove)
+            {
+                attractors.Remove(point);
+            }
             if (attractionActive)
             {
                 extremities.Clear();
@@ -211,7 +215,7 @@ public class Generate : MonoBehaviour
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        GenerateAttractors(numAttracionPointsB, radiusB);
+        GenerateAttractorsBranches(numAttracionPointsB, radiusB);
         Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
