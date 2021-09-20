@@ -325,17 +325,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99ca3a7679f86d46adfea131495a3e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingNode: {x: 0, y: 0, z: 0}
-  generationHeight: 5
-  segmentLength: 0.2
-  killDistance: 0.5
-  numAttracionPoints: 400
-  generateRoots: 1
+  attractionRange: 2
+  _timeBetweenIterations: 0.2
+  _randomGrowth: 0.147
+  startingNodeB: {x: 0, y: 0, z: 0}
+  radiusB: 5
+  segmentLengthB: 0.2
+  killDistanceB: 0.5
+  numAttracionPointsB: 600
+  generateRoots: 0
   startingNodeR: {x: 0, y: 0, z: 0}
-  generationDepth: 5
+  radiusR: 5
   segmentLengthR: 0.2
   killDistanceR: 0.5
-  numAttracionPointsR: 400
+  numAttracionPointsR: 600
 --- !u!4 &1168264136
 Transform:
   m_ObjectHideFlags: 0
