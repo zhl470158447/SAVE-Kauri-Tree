@@ -86,20 +86,17 @@ public class Generate : MonoBehaviour
                 foreach (Limb l in limbs)
                 {
                     float distance = Vector3.Distance(l.end, point);
-                    if (distance <= attractionRange)
+                    if (distance <= killDistance)
                     {
-                        if (distance <= killDistance)
+                        pointsToRemove.Add(point);
+                        break;
+                    }
+                    else
+                    {
+                        if (distance < closestDistance)
                         {
-                            pointsToRemove.Add(point);
-                            break;
-                        }
-                        else
-                        {
-                            if (distance < closestDistance)
-                            {
-                                closest = l;
-                                closestDistance = distance;
-                            }
+                            closest = l;
+                            closestDistance = distance;
                             if (!attractionActive)
                             {
                                 attractionActive = true;
