@@ -328,6 +328,7 @@ MonoBehaviour:
   attractionRange: 2
   _timeBetweenIterations: 0.2
   _randomGrowth: 0.147
+  stage: 2
   startingNodeB: {x: 0, y: 0, z: 0}
   radiusB: 5
   segmentLengthB: 0.2

@@ -25,10 +25,13 @@ public class Generate : MonoBehaviour
         }
     }
 
+    public enum TreeStage { Young, Ricker, Mature };
+
     [Header("Generation paramters")]
     public float attractionRange = 1f;
     public float _timeBetweenIterations = .5f;
     public float _randomGrowth = 0.1f;
+    public TreeStage stage = TreeStage.Mature;
 
     [Header("Branch parameters")]
     public Vector3 startingNodeB = new Vector3(0, 0, 0);
@@ -52,53 +55,7 @@ public class Generate : MonoBehaviour
     List<Vector3> attractionPointsBranches = new List<Vector3>();
     List<Vector3> attractionPointsRoots = new List<Vector3>();
     float _timeSinceLastIteration = 0f;
-
-    void GenerateAttractorsRoots(int n, float r)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            float radius = Random.Range(0f, 1f);
-            radius = Mathf.Pow(Mathf.Sin(radius * Mathf.PI / 2f), 0.8f);
-            radius *= r;
-            // 2 angles are generated from which a direction will be computed
-            float alpha = Random.Range(0f, Mathf.PI);
-            float theta = Random.Range(0f, Mathf.PI * 2f);
-
-            Vector3 pt = new Vector3(
-                radius * Mathf.Cos(theta) * Mathf.Sin(alpha),
-                radius * Mathf.Sin(theta) * Mathf.Sin(alpha),
-                radius * Mathf.Cos(alpha)
-            );
-
-            // translation to match the parent position
-            pt += startingNodeR - new Vector3(0, r, 0);
-
-            attractionPointsRoots.Add(pt);
-        }
-    }
-    void GenerateAttractorsBranches(int n, float r)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            float radius = Random.Range(0f, 1f);
-            radius = Mathf.Pow(Mathf.Sin(radius * Mathf.PI / 2f), 0.8f);
-            radius *= r;
-            // 2 angles are generated from which a direction will be computed
-            float alpha = Random.Range(0f, Mathf.PI);
-            float theta = Random.Range(0f, Mathf.PI);
-
-            Vector3 pt = new Vector3(
-                radius * Mathf.Cos(theta) * Mathf.Sin(alpha),
-                radius * Mathf.Sin(theta) * Mathf.Sin(alpha),
-                radius * Mathf.Cos(alpha)
-            );
-
-            // translation to match the parent position
-            pt += startingNodeB + new Vector3(0, r, 0);
-
-            attractionPointsBranches.Add(pt);
-        }
-    }
+    AttractionPointDistribution attrDist = new AttractionPointDistribution();
 
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     Vector3 RandomGrowthVector()
@@ -205,20 +162,30 @@ public class Generate : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void initiliazeMatureKauri()
     {
         if (generateRoots)
         {
-            GenerateAttractorsRoots(numAttracionPointsR, radiusR);
+            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, startingNodeR);
             Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        GenerateAttractorsBranches(numAttracionPointsB, radiusB);
+        attractionPointsBranches = attrDist.GenerateAttractorsHemisphere(numAttracionPointsB, radiusB, startingNodeB);
         Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        switch (stage)
+        {
+            case TreeStage.Mature:
+                initiliazeMatureKauri();
+                break;
+        }
     }
 
     // Update is called once per frame
