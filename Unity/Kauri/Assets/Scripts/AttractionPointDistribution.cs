@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AttractionPointDistribution
 {
+
+    public List<Vector3> distr = new List<Vector3>();
+
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     public List<Vector3> GenerateAttractorsSpherical(int n, float r, Vector3 start)
     {
@@ -57,4 +60,10 @@ public class AttractionPointDistribution
         }
         return points;
     }
+
+    public void GenerateReusableAttractors(int n, float r, Vector3 start)
+    {
+        distr = GenerateAttractorsHemisphere(n, r, start);
+    }
+
 }

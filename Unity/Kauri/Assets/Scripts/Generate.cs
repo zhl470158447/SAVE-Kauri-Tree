@@ -34,7 +34,6 @@ public class Generate : MonoBehaviour
     public TreeStage stage = TreeStage.Mature;
 
     [Header("Branch parameters")]
-    public Vector3 startingNodeB = new Vector3(0, 0, 0);
     public float radiusB = 5f;
     public float segmentLengthB=0.2f;
     public float killDistanceB=0.5f;
@@ -42,14 +41,15 @@ public class Generate : MonoBehaviour
 
     [Header("Root parameters")]
     public bool generateRoots=true;
-    public Vector3 startingNodeR = new Vector3(0, 0, 0);
     public float radiusR = 5f;
     public float segmentLengthR = 0.2f;
     public float killDistanceR = 0.5f;
     public int numAttracionPointsR = 400;
 
     List<Limb> branches = new List<Limb>();
+    List<Limb> branches2 = new List<Limb>();
     List<Limb> branchExtremities = new List<Limb>();
+    List<Limb> branchExtremities2 = new List<Limb>();
     List<Limb> roots = new List<Limb>();
     List<Limb> rootExtremities = new List<Limb>();
     List<Vector3> attractionPointsBranches = new List<Vector3>();
@@ -159,17 +159,108 @@ public class Generate : MonoBehaviour
         }
     }
 
+    void growLimbsRadius(List<Limb> limbs, List<Limb> extremities, List<Vector3> attractors, float killDistance, float segmentLength)
+    {
+        if (attractors.Count > 0)
+        {
+            bool attractionActive = false;
+
+            List<Vector3> pointsToRemove = new List<Vector3>();
+            foreach (Vector3 point in attractors)
+            {
+                Limb closest = null;
+                float closestDistance = int.MaxValue;
+                foreach (Limb l in limbs)
+                {
+                    float distance = Vector3.Distance(l.end, point);
+                    if (distance <= attractionRange)
+                    {
+                        if (distance <= killDistance)
+                        {
+                            pointsToRemove.Add(point);
+                            break;
+                        }
+                        else
+                        {
+                            if (distance < closestDistance)
+                            {
+                                closest = l;
+                                closestDistance = distance;
+                                if (!attractionActive)
+                                {
+                                    attractionActive = true;
+                                }
+                            }
+                        } 
+                    }
+                }
+                if (closest != null)
+                {
+                    closest.attractors.Add(point);
+                }
+            }
+            foreach (Vector3 point in pointsToRemove)
+            {
+                attractors.Remove(point);
+            }
+            if (attractionActive)
+            {
+                extremities.Clear();
+                List<Limb> newLimbs = new List<Limb>();
+                foreach (Limb l in limbs)
+                {
+                    if (l.attractors.Count > 0)
+                    {
+                        Vector3 growthDirection = new Vector3(0, 0, 0);
+                        foreach (Vector3 attr in l.attractors)
+                        {
+                            growthDirection += (attr - l.end).normalized;
+                        }
+                        growthDirection /= l.attractors.Count;
+                        //growthDirection += RandomGrowthVector();
+                        growthDirection.Normalize();
+                        Limb newLimb = new Limb(l.end, l.end + growthDirection * segmentLength, growthDirection, l);
+                        l.children.Add(newLimb);
+                        newLimbs.Add(newLimb);
+                        extremities.Add(newLimb);
+                        l.attractors.Clear();
+                    }
+                    else
+                    {
+                        if (l.children.Count == 0)
+                        {
+                            extremities.Add(l);
+                        }
+                    }
+                }
+                limbs.AddRange(newLimbs);
+            }
+            else
+            {
+                for (int i = 0; i < extremities.Count; i++)
+                {
+                    Limb l = extremities[i];
+                    Limb current = new Limb(l.end, l.end + l.direction, l.direction, l);
+                    limbs.Add(current);
+                    extremities[i] = current;
+                    l.children.Add(current);
+                }
+            }
+        }
+    }
+
     void initiliazeMatureKauri()
     {
+        Vector3 position = this.transform.position;
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, startingNodeR);
-            Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
+            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, position);
+            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsHemisphere(numAttracionPointsB, radiusB, startingNodeB);
-        Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+        attractionPointsBranches = new List<Vector3>(attrDist.distr);
+        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
     }
@@ -177,6 +268,7 @@ public class Generate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        attrDist.GenerateReusableAttractors(numAttracionPointsB, radiusB, this.transform.position);
         switch (stage)
         {
             case TreeStage.Mature:
@@ -193,12 +285,33 @@ public class Generate : MonoBehaviour
         // we check if we need to run a new iteration 
         if (_timeSinceLastIteration > _timeBetweenIterations)
         {
-            _timeSinceLastIteration = 0f;
-            if (generateRoots)
+            if (branches2.Count < 1)
             {
-                growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR); 
+                _timeSinceLastIteration = 0f;
+                if (generateRoots)
+                {
+                    growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR);
+                }
+                growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB); 
             }
-            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB);
+            else
+            {
+                _timeSinceLastIteration = 0f;
+                growLimbs(branches2, branchExtremities2, attractionPointsBranches, killDistanceB, segmentLengthB);
+            }
+        }
+
+        if (branches2.Count < 1 && attractionPointsBranches.Count < 14)
+        {
+            Vector3 position = this.transform.position + new Vector3 (10,0,0);
+            Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+            branches2.Add(baseBranch);
+            branchExtremities2.Add(baseBranch);
+            attractionPointsBranches = new List<Vector3>(attrDist.distr);
+            for(int i = 0; i<numAttracionPointsB; i++)
+            {
+                attractionPointsBranches[i] += new Vector3(10, 0, 0);
+            }
         }
     }
 
@@ -207,6 +320,11 @@ public class Generate : MonoBehaviour
         foreach(Limb b in branches)
         {
             Gizmos.color = Color.green;
+            Gizmos.DrawLine(b.start, b.end);
+        }
+        foreach (Limb b in branches2)
+        {
+            Gizmos.color = Color.yellow;
             Gizmos.DrawLine(b.start, b.end);
         }
         foreach (Limb r in roots)
