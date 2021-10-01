@@ -74,9 +74,18 @@ public class AttractionPointDistribution
                 radius * Mathf.Cos(alpha)
             );
 
-            if (pt.y < -r/4)
+            if (pt.y < -r/3)
             {
                 continue;
+            }
+            else if(pt.y < 0)
+            {
+                Vector2 pt2D = new Vector2(pt.x, pt.z);
+                Vector2 center2D = new Vector2(start.x, start.z);
+                if (Vector2.Distance(pt2D, center2D) < 2)
+                {
+                    continue;
+                }
             }
 
             // translation to match the parent position
