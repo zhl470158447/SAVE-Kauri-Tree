@@ -109,4 +109,18 @@ public class AttractionPointDistribution
         }
         return points;
     }
+
+    public List<Vector3> GenerateAttractorsCone(int n, float h, Vector3 start)
+    {
+        List<Vector3> points = new List<Vector3>();
+        while (points.Count < n)
+        {
+            float pointHeight = Random.Range(0f, h);
+            float radius = Mathf.Tan(Mathf.Deg2Rad*30)*(h-pointHeight);
+            radius = Random.Range(0f, radius);
+            float angle = Random.Range(0f, Mathf.PI * 2f);
+            points.Add(new Vector3(radius*Mathf.Sin(angle), pointHeight, radius*Mathf.Cos(angle)));
+        }
+        return points;
+    }
 }
