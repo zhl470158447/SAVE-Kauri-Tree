@@ -54,4 +54,18 @@ public class AttractionPointDistribution
         }
         return points;
     }
+
+    public List<Vector3> GenerateAttractorsCube(int n, float r, Vector3 start)
+    {
+        List<Vector3> points = new List<Vector3>();
+        for (int i = 0; i < n; i++)
+        {
+            float x = Random.Range(-r, r);
+            float y = Random.Range(-r, r);
+            float z = Random.Range(-r, r);
+            Vector3 point = start + new Vector3(x, y, z) + new Vector3(0, -r, 0);
+            points.Add(point);
+        }
+        return points;
+    }
 }
