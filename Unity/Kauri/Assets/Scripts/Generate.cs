@@ -166,12 +166,12 @@ public class Generate : MonoBehaviour
     {
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, startingNodeR);
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
             Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsHemisphere(numAttracionPointsB, radiusB, startingNodeB);
+        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, startingNodeB);
         Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
