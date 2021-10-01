@@ -297,7 +297,7 @@ public class Generate : MonoBehaviour
             else
             {
                 _timeSinceLastIteration = 0f;
-                growLimbs(branches2, branchExtremities2, attractionPointsBranches, killDistanceB, segmentLengthB);
+                growLimbsRadius(branches2, branchExtremities2, attractionPointsBranches, killDistanceB, segmentLengthB);
             }
         }
 

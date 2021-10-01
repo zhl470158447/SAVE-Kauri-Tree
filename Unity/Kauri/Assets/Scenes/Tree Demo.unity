@@ -333,7 +333,7 @@ MonoBehaviour:
   segmentLengthB: 0.2
   killDistanceB: 0.5
   numAttracionPointsB: 600
-  generateRoots: 1
+  generateRoots: 0
   radiusR: 5
   segmentLengthR: 0.2
   killDistanceR: 0.5
