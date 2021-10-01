@@ -177,6 +177,21 @@ public class Generate : MonoBehaviour
         branchExtremities.Add(baseBranch);
     }
 
+    void initializeYoungKauri()
+    {
+        if (generateRoots)
+        {
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
+            Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
+            roots.Add(baseRoot);
+            rootExtremities.Add(baseRoot);
+        }
+        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, radiusB, startingNodeB);
+        Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+        branches.Add(baseBranch);
+        branchExtremities.Add(baseBranch);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -184,6 +199,9 @@ public class Generate : MonoBehaviour
         {
             case TreeStage.Mature:
                 initiliazeMatureKauri();
+                break;
+            case TreeStage.Young:
+                initializeYoungKauri();
                 break;
         }
     }
