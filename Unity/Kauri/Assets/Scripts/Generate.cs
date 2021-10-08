@@ -22,6 +22,14 @@ public class Generate : MonoBehaviour
             this.end = end;
             this.direction = direction;
             this.parent = parent;
+            if(parent == null)
+            {
+                distanceFromRoot = 0;
+            }
+            else //increase the distance from root if not first limb
+            {
+                distanceFromRoot = parent.distanceFromRoot + 1;
+            }
         }
     }
 
@@ -72,7 +80,7 @@ public class Generate : MonoBehaviour
         return pt * _randomGrowth;
     }
 
-    void growLimbs(List<Limb> limbs, List<Limb> extremities, List<Vector3> attractors, float killDistance, float segmentLength)
+    void growLimbs(List<Limb> limbs, List<Limb> extremities, List<Vector3> attractors, float killDistance, float segmentLength, bool roots)
     {
         if (attractors.Count>0)
         {
@@ -86,33 +94,30 @@ public class Generate : MonoBehaviour
                 foreach (Limb l in limbs)
                 {
                     float distance = Vector3.Distance(l.end, point);
-                    if (distance <= attractionRange)
+                    if (distance <= killDistance)
                     {
-                        if (distance <= killDistance)
+                        pointsToRemove.Add(point);
+                        break;
+                    }
+                    else if ((roots && l.end.y >= point.y) || (!roots && l.end.y <= point.y)) //roots can't grow up, branches can't grow down
+                    {
+                        if (distance < closestDistance) //keep track of the closest limb
                         {
-                            pointsToRemove.Add(point);
-                            break;
+                            closest = l;
+                            closestDistance = distance;
                         }
-                        else
+                        if (!attractionActive)
                         {
-                            if (distance < closestDistance)
-                            {
-                                closest = l;
-                                closestDistance = distance;
-                            }
-                            if (!attractionActive)
-                            {
-                                attractionActive = true;
-                            }
+                            attractionActive = true;
                         }
                     }
                 }
                 if (closest != null)
                 {
-                    closest.attractors.Add(point);
+                    closest.attractors.Add(point); //set attractor of closest limb equal to this point
                 }
             }
-            foreach(Vector3 point in pointsToRemove)
+            foreach(Vector3 point in pointsToRemove) //remove points from within kill distance
             {
                 attractors.Remove(point);
             }
@@ -130,7 +135,7 @@ public class Generate : MonoBehaviour
                             growthDirection += (attr - l.end).normalized;
                         }
                         growthDirection /= l.attractors.Count;
-                        //growthDirection += RandomGrowthVector();
+                        growthDirection += RandomGrowthVector();
                         growthDirection.Normalize();
                         Limb newLimb = new Limb(l.end, l.end + growthDirection * segmentLength, growthDirection, l);
                         l.children.Add(newLimb);
@@ -148,7 +153,7 @@ public class Generate : MonoBehaviour
                 }
                 limbs.AddRange(newLimbs);
             }
-            else
+            else //grow extremities in previous direction
             {
                 for (int i = 0; i < extremities.Count; i++)
                 {
@@ -166,12 +171,27 @@ public class Generate : MonoBehaviour
     {
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, startingNodeR);
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
             Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsHemisphere(numAttracionPointsB, radiusB, startingNodeB);
+        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, startingNodeB);
+        Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+        branches.Add(baseBranch);
+        branchExtremities.Add(baseBranch);
+    }
+
+    void initializeYoungKauri()
+    {
+        if (generateRoots)
+        {
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
+            Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
+            roots.Add(baseRoot);
+            rootExtremities.Add(baseRoot);
+        }
+        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, radiusB, startingNodeB);
         Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
@@ -184,6 +204,9 @@ public class Generate : MonoBehaviour
         {
             case TreeStage.Mature:
                 initiliazeMatureKauri();
+                break;
+            case TreeStage.Young:
+                initializeYoungKauri();
                 break;
         }
     }
@@ -199,9 +222,9 @@ public class Generate : MonoBehaviour
             _timeSinceLastIteration = 0f;
             if (generateRoots)
             {
-                growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR); 
+                growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true); 
             }
-            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB);
+            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
         }
     }
 
