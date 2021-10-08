@@ -26,7 +26,7 @@ public class Generate : MonoBehaviour
             {
                 distanceFromRoot = 0;
             }
-            else
+            else //increase the distance from root if not first limb
             {
                 distanceFromRoot = parent.distanceFromRoot + 1;
             }
@@ -99,9 +99,9 @@ public class Generate : MonoBehaviour
                         pointsToRemove.Add(point);
                         break;
                     }
-                    else if ((roots && l.end.y >= point.y) || (!roots && l.end.y <= point.y))
+                    else if ((roots && l.end.y >= point.y) || (!roots && l.end.y <= point.y)) //roots can't grow up, branches can't grow down
                     {
-                        if (distance < closestDistance)
+                        if (distance < closestDistance) //keep track of the closest limb
                         {
                             closest = l;
                             closestDistance = distance;
@@ -114,10 +114,10 @@ public class Generate : MonoBehaviour
                 }
                 if (closest != null)
                 {
-                    closest.attractors.Add(point);
+                    closest.attractors.Add(point); //set attractor of closest limb equal to this point
                 }
             }
-            foreach(Vector3 point in pointsToRemove)
+            foreach(Vector3 point in pointsToRemove) //remove points from within kill distance
             {
                 attractors.Remove(point);
             }
@@ -135,7 +135,7 @@ public class Generate : MonoBehaviour
                             growthDirection += (attr - l.end).normalized;
                         }
                         growthDirection /= l.attractors.Count;
-                        //growthDirection += RandomGrowthVector();
+                        growthDirection += RandomGrowthVector();
                         growthDirection.Normalize();
                         Limb newLimb = new Limb(l.end, l.end + growthDirection * segmentLength, growthDirection, l);
                         l.children.Add(newLimb);
@@ -153,7 +153,7 @@ public class Generate : MonoBehaviour
                 }
                 limbs.AddRange(newLimbs);
             }
-            else
+            else //grow extremities in previous direction
             {
                 for (int i = 0; i < extremities.Count; i++)
                 {
