@@ -22,6 +22,14 @@ public class Generate : MonoBehaviour
             this.end = end;
             this.direction = direction;
             this.parent = parent;
+            if(parent == null)
+            {
+                distanceFromRoot = 0;
+            }
+            else
+            {
+                distanceFromRoot = parent.distanceFromRoot + 1;
+            }
         }
     }
 
