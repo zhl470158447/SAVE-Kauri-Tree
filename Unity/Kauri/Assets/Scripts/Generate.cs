@@ -170,7 +170,7 @@ public class Generate : MonoBehaviour
         {
             foreach(Limb l in extremities) //start by adding leaves at the end of each branch
             {
-                Instantiate(leaves, l.end, Quaternion.identity);
+                Instantiate(leaves, l.end, Quaternion.LookRotation(l.direction));
             }
         }
     }
