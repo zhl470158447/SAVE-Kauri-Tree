@@ -40,6 +40,7 @@ public class Generate : MonoBehaviour
     public float _timeBetweenIterations = .5f;
     public float _randomGrowth = 0.1f;
     public TreeStage stage = TreeStage.Mature;
+    public GameObject leaves;
 
     [Header("Branch parameters")]
     public Vector3 startingNodeB = new Vector3(0, 0, 0);
@@ -164,6 +165,13 @@ public class Generate : MonoBehaviour
                     l.children.Add(current);
                 }
             } 
+        }
+        else //branches have grown, add leaves
+        {
+            foreach(Limb l in extremities) //start by adding leaves at the end of each branch
+            {
+                Instantiate(leaves, l.end, Quaternion.identity);
+            }
         }
     }
 
