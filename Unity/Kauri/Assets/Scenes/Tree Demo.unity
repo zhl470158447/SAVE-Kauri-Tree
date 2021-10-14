@@ -326,15 +326,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attractionRange: 2
-  _timeBetweenIterations: 0.2
+  _timeBetweenIterations: 0
   _randomGrowth: 0.147
   stage: 2
+  leaves: {fileID: 5426607574490480564, guid: bd493855d6d55bc4dabf436f8d6a29ef, type: 3}
   startingNodeB: {x: 0, y: 0, z: 0}
   radiusB: 5
   segmentLengthB: 0.2
   killDistanceB: 0.5
   numAttracionPointsB: 600
-  generateRoots: 1
+  generateRoots: 0
   startingNodeR: {x: 0, y: 0, z: 0}
   radiusR: 5
   segmentLengthR: 0.2
