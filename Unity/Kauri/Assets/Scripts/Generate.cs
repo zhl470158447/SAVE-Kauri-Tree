@@ -66,6 +66,8 @@ public class Generate : MonoBehaviour
     float _timeSinceLastIteration = 0f;
     AttractionPointDistribution attrDist = new AttractionPointDistribution();
 
+    bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
+
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     Vector3 RandomGrowthVector()
     {
@@ -79,6 +81,14 @@ public class Generate : MonoBehaviour
         );
 
         return pt * _randomGrowth;
+    }
+
+    Quaternion randomRotation() //returns a random rotation in all 3 axes
+    {
+        float x = Random.Range(-Mathf.PI/2, Mathf.PI/2);
+        float y = Random.Range(-Mathf.PI/2, Mathf.PI/2);
+        float z = Random.Range(-Mathf.PI/2, Mathf.PI/2);
+        return Quaternion.Euler(x, y, z);
     }
 
     void growLimbs(List<Limb> limbs, List<Limb> extremities, List<Vector3> attractors, float killDistance, float segmentLength, bool roots)
@@ -166,8 +176,9 @@ public class Generate : MonoBehaviour
                 }
             } 
         }
-        else //branches have grown, add leaves
+        else if(!leavesGenerated) //branches have grown, add leaves if none have been added yet
         {
+            leavesGenerated = true;
             foreach(Limb l in extremities) //start by adding leaves at the end of each branch
             {
                 Instantiate(leaves, l.end, Quaternion.LookRotation(l.direction));
