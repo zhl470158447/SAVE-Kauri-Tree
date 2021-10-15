@@ -40,7 +40,7 @@ public class Generate : MonoBehaviour
     public float _timeBetweenIterations = .5f;
     public float _randomGrowth = 0.1f;
     public TreeStage stage = TreeStage.Mature;
-    public GameObject leaves;
+    public GameObject leafObject;
 
     [Header("Branch parameters")]
     public Vector3 startingNodeB = new Vector3(0, 0, 0);
@@ -67,6 +67,7 @@ public class Generate : MonoBehaviour
     AttractionPointDistribution attrDist = new AttractionPointDistribution();
 
     bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
+    List<GameObject> leaves = new List<GameObject>();
 
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     Vector3 RandomGrowthVector()
@@ -181,7 +182,7 @@ public class Generate : MonoBehaviour
             leavesGenerated = true;
             foreach(Limb l in extremities) //start by adding leaves at the end of each branch
             {
-                Instantiate(leaves, l.end, Quaternion.LookRotation(l.direction));
+                leaves.Add(Instantiate(leafObject, l.end, Quaternion.LookRotation(l.direction)));
             }
         }
     }

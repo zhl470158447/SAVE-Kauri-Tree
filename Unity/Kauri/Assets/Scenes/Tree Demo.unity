@@ -329,7 +329,8 @@ MonoBehaviour:
   _timeBetweenIterations: 0
   _randomGrowth: 0.147
   stage: 2
-  leaves: {fileID: 5426607574490480564, guid: bd493855d6d55bc4dabf436f8d6a29ef, type: 3}
+  leafObject: {fileID: 5426607574490480564, guid: bd493855d6d55bc4dabf436f8d6a29ef,
+    type: 3}
   startingNodeB: {x: 0, y: 0, z: 0}
   radiusB: 5
   segmentLengthB: 0.2
