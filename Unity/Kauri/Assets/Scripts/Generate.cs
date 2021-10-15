@@ -176,7 +176,7 @@ public class Generate : MonoBehaviour
                 }
             } 
         }
-        else if(!leavesGenerated) //branches have grown, add leaves if none have been added yet
+        else if(!roots && !leavesGenerated) //branches have grown, add leaves if none have been added yet (only apply to branches)
         {
             leavesGenerated = true;
             foreach(Limb l in extremities) //start by adding leaves at the end of each branch
