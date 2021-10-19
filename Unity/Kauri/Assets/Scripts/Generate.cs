@@ -47,6 +47,7 @@ public class Generate : MonoBehaviour
     public float attractionRange = 1f;
     public float _randomGrowth = 0.1f;
     public TreeStage stage = TreeStage.Mature;
+    public float trunkHeight = 5;
     public GameObject leafObject;
 
     [Header("Branch parameters")]
@@ -98,12 +99,12 @@ public class Generate : MonoBehaviour
         return Quaternion.Euler(x, y, z);
     }
 
-    void growTrunk()
+    void growTrunk(float height)
     {
-        while (branches[branches.Count - 1].end.y < position.y + radiusB)
+        while (branches[branches.Count - 1].end.y < height)
         {
             Limb l = branches[branches.Count - 1];
-            Limb current = new Limb(l.end, l.end + l.direction, l.direction, l, l.type);
+            Limb current = new Limb(l.end, l.end + l.direction, l.direction, l, limbType.trunk);
             branches.Add(current);
             l.children.Add(current);
         }
@@ -215,6 +216,7 @@ public class Generate : MonoBehaviour
 
     void initiliazeMatureKauri()
     {
+        float bareTrunk = trunkHeight * 0.7f;
         if (generateRoots)
         {
             attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, position);
@@ -222,9 +224,10 @@ public class Generate : MonoBehaviour
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position);
+        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position + new Vector3(0, bareTrunk, 0));
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk);
         branches.Add(baseBranch);
+        growTrunk(position.y + trunkHeight);
     }
 
     void initializeYoungKauri()
@@ -236,9 +239,11 @@ public class Generate : MonoBehaviour
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, radiusB, position);
+        float bareTrunk = trunkHeight * .2f;
+        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, trunkHeight - bareTrunk, position+new Vector3(0,bareTrunk,0));
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk);
         branches.Add(baseBranch);
+        growTrunk(position.y + trunkHeight);
     }
 
     // Start is called before the first frame update
@@ -254,7 +259,6 @@ public class Generate : MonoBehaviour
                 initializeYoungKauri();
                 break;
         }
-        growTrunk();
     }
 
     // Update is called once per frame
@@ -271,7 +275,12 @@ public class Generate : MonoBehaviour
     {
         foreach(Limb b in branches)
         {
-            Gizmos.color = Color.green;
+            if(b.type == limbType.trunk)
+            {
+                Gizmos.color = Color.black;
+            }
+            else
+                Gizmos.color = Color.green;
             Gizmos.DrawLine(b.start, b.end);
         }
         foreach (Limb r in roots)

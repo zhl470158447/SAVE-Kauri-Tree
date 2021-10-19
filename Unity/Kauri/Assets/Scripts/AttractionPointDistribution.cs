@@ -59,7 +59,7 @@ public class AttractionPointDistribution
 
     public List<Vector3> GenerateAttractorsMatureBranches(int n, float r, Vector3 start)
     {
-        Vector3 center = start + new Vector3(0, r, 0);
+        Vector3 center = start + new Vector3(0, r/2, 0);
         List<Vector3> points = new List<Vector3>();
         while(points.Count<n) //use while instead of for since some points will be discarded
         {
