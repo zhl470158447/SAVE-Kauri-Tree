@@ -5,7 +5,6 @@ using UnityEngine;
 //based off of https://ciphrd.com/2019/09/11/generating-a-3d-growing-tree-using-a-space-colonization-algorithm/
 public class Generate : MonoBehaviour
 {
-
     class Limb
     {
         public Vector3 start;
@@ -35,15 +34,17 @@ public class Generate : MonoBehaviour
 
     public enum TreeStage { Young, Ricker, Mature };
 
-    [Header("Generation paramters")]
+    [Header("Environmental parameters")]
+    [Range(0.0f, 100.0f)]
+    public float diebackSlider;
+
+    [Header("Generation parameters")]
     public float attractionRange = 1f;
-    public float _timeBetweenIterations = .5f;
     public float _randomGrowth = 0.1f;
     public TreeStage stage = TreeStage.Mature;
     public GameObject leafObject;
 
     [Header("Branch parameters")]
-    public Vector3 startingNodeB = new Vector3(0, 0, 0);
     public float radiusB = 5f;
     public float segmentLengthB=0.2f;
     public float killDistanceB=0.5f;
@@ -51,7 +52,6 @@ public class Generate : MonoBehaviour
 
     [Header("Root parameters")]
     public bool generateRoots=true;
-    public Vector3 startingNodeR = new Vector3(0, 0, 0);
     public float radiusR = 5f;
     public float segmentLengthR = 0.2f;
     public float killDistanceR = 0.5f;
@@ -68,6 +68,7 @@ public class Generate : MonoBehaviour
 
     bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
     List<GameObject> leaves = new List<GameObject>();
+    Vector3 position;
 
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     Vector3 RandomGrowthVector()
@@ -191,13 +192,13 @@ public class Generate : MonoBehaviour
     {
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
-            Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, position);
+            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, startingNodeB);
-        Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+        attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position);
+        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
     }
@@ -206,13 +207,13 @@ public class Generate : MonoBehaviour
     {
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, startingNodeR);
-            Limb baseRoot = new Limb(startingNodeR, startingNodeR + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
+            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, position);
+            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null);
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, radiusB, startingNodeB);
-        Limb baseBranch = new Limb(startingNodeB, startingNodeB + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
+        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, radiusB, position);
+        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null);
         branches.Add(baseBranch);
         branchExtremities.Add(baseBranch);
     }
@@ -220,6 +221,7 @@ public class Generate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        position = transform.position;
         switch (stage)
         {
             case TreeStage.Mature:
@@ -234,18 +236,11 @@ public class Generate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _timeSinceLastIteration += Time.deltaTime;
-
-        // we check if we need to run a new iteration 
-        if (_timeSinceLastIteration > _timeBetweenIterations)
+        if (generateRoots)
         {
-            _timeSinceLastIteration = 0f;
-            if (generateRoots)
-            {
-                growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true); 
-            }
-            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
+            growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true);
         }
+        growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
     }
 
     private void OnDrawGizmos()
