@@ -325,19 +325,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99ca3a7679f86d46adfea131495a3e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  diebackSlider: 0
   attractionRange: 2
-  _timeBetweenIterations: 0
   _randomGrowth: 0.147
   stage: 2
+  trunkHeight: 10
   leafObject: {fileID: 5426607574490480564, guid: bd493855d6d55bc4dabf436f8d6a29ef,
     type: 3}
-  startingNodeB: {x: 0, y: 0, z: 0}
   radiusB: 5
   segmentLengthB: 0.2
   killDistanceB: 0.5
   numAttracionPointsB: 600
   generateRoots: 0
-  startingNodeR: {x: 0, y: 0, z: 0}
   radiusR: 5
   segmentLengthR: 0.2
   killDistanceR: 0.5
@@ -355,4 +354,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1840135255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1840135257}
+  - component: {fileID: 1840135256}
+  m_Layer: 0
+  m_Name: Tree (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1840135256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840135255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99ca3a7679f86d46adfea131495a3e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diebackSlider: 0
+  attractionRange: 2
+  _randomGrowth: 0.147
+  stage: 0
+  trunkHeight: 5
+  leafObject: {fileID: 5426607574490480564, guid: bd493855d6d55bc4dabf436f8d6a29ef,
+    type: 3}
+  radiusB: 5
+  segmentLengthB: 0.2
+  killDistanceB: 0.5
+  numAttracionPointsB: 600
+  generateRoots: 0
+  radiusR: 5
+  segmentLengthR: 0.2
+  killDistanceR: 0.5
+  numAttracionPointsR: 600
+--- !u!4 &1840135257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840135255}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
