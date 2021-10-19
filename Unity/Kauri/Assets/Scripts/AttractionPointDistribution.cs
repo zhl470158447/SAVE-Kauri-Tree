@@ -122,7 +122,7 @@ public class AttractionPointDistribution
             float radius = Mathf.Tan(Mathf.Deg2Rad*30)*(h-pointHeight); //30 degrees as stand in, modify to take a radius input as well as height and use them to find angle
             radius = Random.Range(0f, radius); // point is between center and radius at current height
             float angle = Random.Range(0f, Mathf.PI * 2f); //rotate point by random angle
-            points.Add(new Vector3(radius*Mathf.Sin(angle), pointHeight, radius*Mathf.Cos(angle)));
+            points.Add(start + new Vector3(radius*Mathf.Sin(angle), pointHeight, radius*Mathf.Cos(angle)));
         }
         return points;
     }
