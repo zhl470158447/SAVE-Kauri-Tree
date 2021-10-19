@@ -9,4 +9,9 @@ A few changes to the algorithm are necessary to better suit Kauri and our purpos
 # Running our visualization
 The Unity project uses Unity 2019.4.29f1
 
-Running the Tree Demo scene will generate a single tree. Any object with the generate script attached will generate a tree.
+There are 3 different scenes:
+- Procedural: Contains just the SCA, press run to generate trees
+- Hand Made: All the hand made models
+- Comparison: Contains both hand made and procedural. Press run to generate the procedural.
+
+The procedural models are currently just skeletons that get leaves, there is no mesh for the trunk. The skeletons are visible in the scene view if gizmos are enabled.
