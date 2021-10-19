@@ -101,11 +101,11 @@ public class Generate : MonoBehaviour
 
     void growTrunk(float height)
     {
-        while (branches[branches.Count - 1].end.y < height)
+        while (branches[branches.Count - 1].end.y < height) //trunk too short, keep growing
         {
-            Limb l = branches[branches.Count - 1];
-            Limb current = new Limb(l.end, l.end + l.direction, l.direction, l, limbType.trunk);
-            branches.Add(current);
+            Limb l = branches[branches.Count - 1]; //get latest part of trunk
+            Limb current = new Limb(l.end, l.end + l.direction, l.direction, l, limbType.trunk); //create new limb of trunk type
+            branches.Add(current); //add to branches list so branches can grow off of trunk
             l.children.Add(current);
         }
     }
@@ -176,6 +176,7 @@ public class Generate : MonoBehaviour
                         growthDirection /= l.attractors.Count;
                         growthDirection += RandomGrowthVector();
                         growthDirection.Normalize();
+                        //limb starts from parent's end, grows in the computed direction a distance of segment length, has l as a parent
                         Limb newLimb = new Limb(l.end, l.end + growthDirection * segmentLength, growthDirection, l, type);
                         l.children.Add(newLimb);
                         newLimbs.Add(newLimb);
@@ -197,7 +198,8 @@ public class Generate : MonoBehaviour
                 for (int i = 0; i < extremities.Count; i++)
                 {
                     Limb l = extremities[i];
-                    Limb current = new Limb(l.end, l.end + l.direction, l.direction, l, l.type);
+                    //limb starts from parent's end, grows in the same direction
+                    Limb current = new Limb(l.end, l.end + l.direction * segmentLength, l.direction, l, l.type);
                     limbs.Add(current);
                     extremities[i] = current;
                     l.children.Add(current);
@@ -216,34 +218,34 @@ public class Generate : MonoBehaviour
 
     void initiliazeMatureKauri()
     {
-        float bareTrunk = trunkHeight * 0.7f;
+        float bareTrunk = trunkHeight * 0.7f; //portion of trunk to have no branches
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, position);
-            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null, limbType.root);
+            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, position);
+            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null, limbType.root); //initial root, just straight down
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
         attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position + new Vector3(0, bareTrunk, 0));
-        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk);
+        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
-        growTrunk(position.y + trunkHeight);
+        growTrunk(position.y + trunkHeight); //grow trunk to the trunk height
     }
 
     void initializeYoungKauri()
     {
         if (generateRoots)
         {
-            attractionPointsRoots = attrDist.GenerateAttractorsCube(numAttracionPointsR, radiusR, position);
-            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null, limbType.root);
+            attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, position);
+            Limb baseRoot = new Limb(position, position + new Vector3(0, -segmentLengthB, 0), new Vector3(0, -segmentLengthB, 0), null, limbType.root); //initial root, just straight down
             roots.Add(baseRoot);
             rootExtremities.Add(baseRoot);
         }
-        float bareTrunk = trunkHeight * .2f;
+        float bareTrunk = trunkHeight * .2f; //portion of trunk to have no branches
         attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, trunkHeight - bareTrunk, position+new Vector3(0,bareTrunk,0));
-        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk);
+        Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
-        growTrunk(position.y + trunkHeight);
+        growTrunk(position.y + trunkHeight);    //grow trunk to the trunk height
     }
 
     // Start is called before the first frame update
@@ -257,6 +259,9 @@ public class Generate : MonoBehaviour
                 break;
             case TreeStage.Young:
                 initializeYoungKauri();
+                break;
+            case TreeStage.Ricker:
+                //TODO
                 break;
         }
     }
