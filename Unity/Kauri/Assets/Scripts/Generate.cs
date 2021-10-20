@@ -63,13 +63,18 @@ public class Generate : MonoBehaviour
     public float killDistanceR = 0.5f;
     public int numAttracionPointsR = 400;
 
+    [Header("Leaf materials")]
+    public Material healthy;
+    public Material unhealthy1;
+    public Material unhealthy2;
+    public Material unhealthy3;
+
     List<Limb> branches = new List<Limb>();
     List<Limb> branchExtremities = new List<Limb>();
     List<Limb> roots = new List<Limb>();
     List<Limb> rootExtremities = new List<Limb>();
     List<Vector3> attractionPointsBranches = new List<Vector3>();
     List<Vector3> attractionPointsRoots = new List<Vector3>();
-    float _timeSinceLastIteration = 0f;
     AttractionPointDistribution attrDist = new AttractionPointDistribution();
 
     bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
