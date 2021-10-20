@@ -130,11 +130,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b_trunk
+      value: Young - dead
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_LocalPosition.x
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 161389069}
   - component: {fileID: 161389068}
   m_Layer: 0
-  m_Name: Tree (3)
+  m_Name: SCA Young
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -223,6 +223,10 @@ MonoBehaviour:
   segmentLengthR: 0.2
   killDistanceR: 0.5
   numAttracionPointsR: 600
+  healthy: {fileID: 0}
+  unhealthy1: {fileID: 0}
+  unhealthy2: {fileID: 0}
+  unhealthy3: {fileID: 0}
 --- !u!4 &161389069
 Transform:
   m_ObjectHideFlags: 0
@@ -246,11 +250,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_Name
-      value: Tree (1)
+      value: Mature
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_LocalPosition.x
@@ -303,11 +307,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_Name
-      value: Tree - death
+      value: Mature - dead
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -452,11 +456,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b_snow
+      value: Young - snow
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_LocalPosition.x
@@ -511,7 +515,7 @@ GameObject:
   - component: {fileID: 681815717}
   - component: {fileID: 681815716}
   m_Layer: 0
-  m_Name: Tree (2)
+  m_Name: SCA Mature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -545,6 +549,10 @@ MonoBehaviour:
   segmentLengthR: 0.2
   killDistanceR: 0.5
   numAttracionPointsR: 600
+  healthy: {fileID: 2100000, guid: 3addf6ef4a9f9064197f0af11fedc56c, type: 2}
+  unhealthy1: {fileID: 0}
+  unhealthy2: {fileID: 0}
+  unhealthy3: {fileID: 0}
 --- !u!4 &681815717
 Transform:
   m_ObjectHideFlags: 0
@@ -569,12 +577,12 @@ PrefabInstance:
     - target: {fileID: 302846913222558966, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
       propertyPath: m_Name
-      value: Tree
+      value: Ricker
       objectReference: {fileID: 0}
     - target: {fileID: 8432185912679538454, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8432185912679538454, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
@@ -637,11 +645,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_Name
-      value: Tree - leaves yellow & less leaves
+      value: Mature - leaves yellow & less leaves
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -694,11 +702,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b
+      value: Young
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_LocalPosition.x
@@ -834,7 +842,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: eb62dc9b40b13a845b6ede06314eccc7, type: 3}
       propertyPath: m_Name
-      value: Tree - leaves yellow
+      value: Mature - leaves yellow
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: eb62dc9b40b13a845b6ede06314eccc7, type: 3}
       propertyPath: m_RootOrder
