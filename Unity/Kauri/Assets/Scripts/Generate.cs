@@ -272,39 +272,39 @@ public class Generate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (generateRoots && attractionPointsRoots.Count>0)
+        if (generateRoots && attractionPointsRoots.Count>0) //roots need to be generated
         {
             growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true);
         }
-        if (!leavesGenerated)
+        if (!leavesGenerated) //leaves are only generated once all attraction points are gone
         {
             growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
         }
-        else if(diebackSlider>0) //dieback active
+        else if(diebackSlider>0 || removedLeaves.Count>0) //dieback active
         {
             int toRemove = (int)((diebackSlider / 100.0f) * leavesCount); //find what number of leaves should be removed for current dieback level
             int currentLeaves = leavesCount - toRemove;
-            while(currentLeaves < leaves.Count)
+            while(currentLeaves < leaves.Count) //too many, remove
             {
-                int index = Random.Range(0, leaves.Count);
+                int index = Random.Range(0, leaves.Count); //pick randomly from leaves
                 GameObject current = leaves[index];
                 leaves.RemoveAt(index);
-                current.SetActive(false);
-                removedLeaves.Add(current);
+                current.SetActive(false); //keep game objects, just disable
+                removedLeaves.Add(current); //keep track of removed so they can be reenabled and added back
             }
-            while(currentLeaves > leaves.Count)
+            while(currentLeaves > leaves.Count) //not enough, add (basically the opposite of removal)
             {
-                int index = Random.Range(0, removedLeaves.Count);
+                int index = Random.Range(0, removedLeaves.Count); //pick randomly from removed
                 GameObject current = removedLeaves[index];
                 removedLeaves.RemoveAt(index);
-                current.SetActive(true);
+                current.SetActive(true); //re-enable game object
                 leaves.Add(current);
             }
         }
         
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() //for drawing in the scene view
     {
         foreach(Limb b in branches)
         {
