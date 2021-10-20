@@ -74,6 +74,8 @@ public class Generate : MonoBehaviour
 
     bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
     List<GameObject> leaves = new List<GameObject>();
+    List<GameObject> removedLeaves = new List<GameObject>();
+    int leavesCount;
     Vector3 position;
 
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
@@ -213,6 +215,7 @@ public class Generate : MonoBehaviour
             {
                 leaves.Add(Instantiate(leafObject, l.end, Quaternion.LookRotation(l.direction)));
             }
+            leavesCount = leaves.Count;
         }
     }
 
@@ -269,11 +272,36 @@ public class Generate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (generateRoots)
+        if (generateRoots && attractionPointsRoots.Count>0)
         {
             growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true);
         }
-        growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
+        if (!leavesGenerated)
+        {
+            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
+        }
+        else if(diebackSlider>0) //dieback active
+        {
+            int toRemove = (int)((diebackSlider / 100.0f) * leavesCount); //find what number of leaves should be removed for current dieback level
+            int currentLeaves = leavesCount - toRemove;
+            while(currentLeaves < leaves.Count)
+            {
+                int index = Random.Range(0, leaves.Count);
+                GameObject current = leaves[index];
+                leaves.RemoveAt(index);
+                current.SetActive(false);
+                removedLeaves.Add(current);
+            }
+            while(currentLeaves > leaves.Count)
+            {
+                int index = Random.Range(0, removedLeaves.Count);
+                GameObject current = removedLeaves[index];
+                removedLeaves.RemoveAt(index);
+                current.SetActive(true);
+                leaves.Add(current);
+            }
+        }
+        
     }
 
     private void OnDrawGizmos()
