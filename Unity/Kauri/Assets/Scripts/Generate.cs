@@ -63,17 +63,24 @@ public class Generate : MonoBehaviour
     public float killDistanceR = 0.5f;
     public int numAttracionPointsR = 400;
 
+    [Header("Leaf materials")]
+    public Material healthy;
+    public Material unhealthy1;
+    public Material unhealthy2;
+    public Material unhealthy3;
+
     List<Limb> branches = new List<Limb>();
     List<Limb> branchExtremities = new List<Limb>();
     List<Limb> roots = new List<Limb>();
     List<Limb> rootExtremities = new List<Limb>();
     List<Vector3> attractionPointsBranches = new List<Vector3>();
     List<Vector3> attractionPointsRoots = new List<Vector3>();
-    float _timeSinceLastIteration = 0f;
     AttractionPointDistribution attrDist = new AttractionPointDistribution();
 
     bool leavesGenerated = false; //keeps track of if leaves have been added to the tree
     List<GameObject> leaves = new List<GameObject>();
+    List<GameObject> removedLeaves = new List<GameObject>();
+    int leavesCount;
     Vector3 position;
 
     //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
@@ -213,6 +220,7 @@ public class Generate : MonoBehaviour
             {
                 leaves.Add(Instantiate(leafObject, l.end, Quaternion.LookRotation(l.direction)));
             }
+            leavesCount = leaves.Count;
         }
     }
 
@@ -269,14 +277,39 @@ public class Generate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (generateRoots)
+        if (generateRoots && attractionPointsRoots.Count>0) //roots need to be generated
         {
             growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true);
         }
-        growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
+        if (!leavesGenerated) //leaves are only generated once all attraction points are gone
+        {
+            growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
+        }
+        else if(diebackSlider>0 || removedLeaves.Count>0) //dieback active
+        {
+            int toRemove = (int)((diebackSlider / 100.0f) * leavesCount); //find what number of leaves should be removed for current dieback level
+            int currentLeaves = leavesCount - toRemove;
+            while(currentLeaves < leaves.Count) //too many, remove
+            {
+                int index = Random.Range(0, leaves.Count); //pick randomly from leaves
+                GameObject current = leaves[index];
+                leaves.RemoveAt(index);
+                current.SetActive(false); //keep game objects, just disable
+                removedLeaves.Add(current); //keep track of removed so they can be reenabled and added back
+            }
+            while(currentLeaves > leaves.Count) //not enough, add (basically the opposite of removal)
+            {
+                int index = Random.Range(0, removedLeaves.Count); //pick randomly from removed
+                GameObject current = removedLeaves[index];
+                removedLeaves.RemoveAt(index);
+                current.SetActive(true); //re-enable game object
+                leaves.Add(current);
+            }
+        }
+        
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() //for drawing in the scene view
     {
         foreach(Limb b in branches)
         {

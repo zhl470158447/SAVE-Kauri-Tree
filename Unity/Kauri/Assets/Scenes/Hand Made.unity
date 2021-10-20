@@ -131,12 +131,12 @@ PrefabInstance:
     - target: {fileID: 302846913222558966, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
       propertyPath: m_Name
-      value: Tree
+      value: Ricker
       objectReference: {fileID: 0}
     - target: {fileID: 8432185912679538454, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8432185912679538454, guid: 8fb7675b76000294da16316ebfa7eaa8,
         type: 3}
@@ -199,11 +199,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100084, guid: 275ef53d386bde44088354fe711b3fb7, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_a_snow
+      value: Young 1 Snow
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 275ef53d386bde44088354fe711b3fb7, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 275ef53d386bde44088354fe711b3fb7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -256,11 +256,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_Name
-      value: Tree - death
+      value: Mature - death
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: a2416c8722a8eee45874716872db13a6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -313,11 +313,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b
+      value: Young 2
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a6bf6875b9c555c47b7dd219bd48eb17, type: 3}
       propertyPath: m_LocalPosition.x
@@ -453,11 +453,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b_trunk
+      value: Young 2 Dead
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 7fdf9cc0ebd759c488c90632b7035062, type: 3}
       propertyPath: m_LocalPosition.x
@@ -510,11 +510,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: eb62dc9b40b13a845b6ede06314eccc7, type: 3}
       propertyPath: m_Name
-      value: Tree - leaves yellow
+      value: Mature - leaves yellow
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: eb62dc9b40b13a845b6ede06314eccc7, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: eb62dc9b40b13a845b6ede06314eccc7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -567,11 +567,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100084, guid: 6bf7ae6775ccf4b4c9b86d14efe1507c, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_a
+      value: Young 1
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 6bf7ae6775ccf4b4c9b86d14efe1507c, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 6bf7ae6775ccf4b4c9b86d14efe1507c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -624,11 +624,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_b_snow
+      value: Young 2 Snow
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d2b1300ef40cad14980eec268fa81e68, type: 3}
       propertyPath: m_LocalPosition.x
@@ -681,7 +681,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100084, guid: 05be15b940c25d04194456a3d0c8d557, type: 3}
       propertyPath: m_Name
-      value: kauri_tree_a_trunk
+      value: Young 1 Dead
       objectReference: {fileID: 0}
     - target: {fileID: 400084, guid: 05be15b940c25d04194456a3d0c8d557, type: 3}
       propertyPath: m_RootOrder
@@ -738,11 +738,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_Name
-      value: Tree (1)
+      value: Mature
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: ca819969009b3954cbc326584380d051, type: 3}
       propertyPath: m_LocalPosition.x
@@ -887,11 +887,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034464600580406, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_Name
-      value: Tree - leaves yellow & less leaves
+      value: Mature - leaves yellow & less leaves
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4125198808312658, guid: 160300cc42b96c542b9044079a411bd9, type: 3}
       propertyPath: m_LocalPosition.x
