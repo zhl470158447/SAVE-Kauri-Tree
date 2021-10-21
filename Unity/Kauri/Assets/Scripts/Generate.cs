@@ -81,7 +81,7 @@ public class Generate : MonoBehaviour
     [Range(0f, 5f), Tooltip("Growth power, of the branches size")]
     public float invertGrowth = 2f;
 
-    MeshFilter _filter;
+
 
     /**
 	 * Generates n attractors and stores them in the attractors array
@@ -124,6 +124,7 @@ public class Generate : MonoBehaviour
     List<GameObject> removedLeaves = new List<GameObject>();
     int leavesCount;
     Vector3 position;
+    MeshFilter _filter;
 
     Vector3 RandomGrowthVector()
     {
@@ -168,6 +169,7 @@ public class Generate : MonoBehaviour
         else
         {
             type = limbType.branch;
+            
         }
         if (attractors.Count>0)
         {
@@ -206,7 +208,8 @@ public class Generate : MonoBehaviour
             }
             foreach(Vector3 point in pointsToRemove) //remove points from within kill distance
             {
-                attractors.Remove(point);
+                attractors.Remove(point); 
+
             }
             if (attractionActive)
             {
@@ -263,12 +266,14 @@ public class Generate : MonoBehaviour
             }
             leavesCount = leaves.Count;
         }
+        
     }
 
     void initiliazeMatureKauri()
     {
         _filter = GetComponent<MeshFilter>();
         float bareTrunk = trunkHeight * 0.7f; //portion of trunk to have no branches
+        ToMesh();
         if (generateRoots)
         {
             attractionPointsRoots = attrDist.GenerateAttractorsSpherical(numAttracionPointsR, radiusR, position);
@@ -279,6 +284,7 @@ public class Generate : MonoBehaviour
         attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position + new Vector3(0, bareTrunk, 0));
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
+        
         growTrunk(position.y + trunkHeight); //grow trunk to the trunk height
        
     }
@@ -308,11 +314,13 @@ public class Generate : MonoBehaviour
         switch (stage)
         {
             case TreeStage.Mature:
-                initiliazeMatureKauri();
+                initiliazeMatureKauri();      
                 _filter = GetComponent<MeshFilter>();
+                ToMesh();
                 break;
             case TreeStage.Young:
                 initializeYoungKauri();
+                
                 _filter = GetComponent<MeshFilter>();
                 break;
             case TreeStage.Ricker:
@@ -353,7 +361,7 @@ public class Generate : MonoBehaviour
                 leaves.Add(current);
             }
         }
-        ToMesh();
+        
     }
     void ToMesh()
     {
@@ -362,7 +370,7 @@ public class Generate : MonoBehaviour
         // we first compute the size of each branch 
         for (int i = branches.Count - 1; i >= 0; i--)
         {
-            float size = 0f;
+            float size = 0.02f;
             Limb b = branches[i];
             if (b.children.Count == 0)
             {
@@ -477,10 +485,11 @@ public class Generate : MonoBehaviour
         {
             if(b.type == limbType.trunk)
             {
-                Gizmos.color = Color.black;
+                Gizmos.color = Color.black;   
             }
             else
                 Gizmos.color = Color.green;
+                
             Gizmos.DrawLine(b.start, b.end);
         }
         foreach (Limb r in roots)
