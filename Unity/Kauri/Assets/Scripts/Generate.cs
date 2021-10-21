@@ -18,6 +18,10 @@ public class Generate : MonoBehaviour
         public List<Vector3> attractors = new List<Vector3>();
         public int distanceFromRoot;
         public limbType type;
+        public float size;
+        public float _lastSize;
+        public bool grown = false;
+        public int _verticesId;
 
         public Limb(Vector3 start, Vector3 end, Vector3 direction, Limb parent, limbType type)
         {
@@ -69,6 +73,44 @@ public class Generate : MonoBehaviour
     public Material unhealthy2;
     public Material unhealthy3;
 
+    [Header("Mesh generation")]
+    [Range(0, 20)]
+    public int radialSubdivisions = 10;
+    [Range(0f, 1f), Tooltip("The size at the extremity of the branches")]
+    public float _extremitiesSize = 0.05f;
+    [Range(0f, 5f), Tooltip("Growth power, of the branches size")]
+    public float invertGrowth = 2f;
+
+    MeshFilter _filter;
+
+    /**
+	 * Generates n attractors and stores them in the attractors array
+	 * The points are generated within a sphere of radius r using a random distribution
+	 **/
+    void GenerateAttractors(int n, float r)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            float radius = Random.Range(0f, 1f);
+            radius = Mathf.Pow(Mathf.Sin(radius * Mathf.PI / 2f), 0.8f);
+            radius *= r;
+            // 2 angles are generated from which a direction will be computed
+            float alpha = Random.Range(0f, Mathf.PI);
+            float theta = Random.Range(0f, Mathf.PI * 2f);
+
+            Vector3 pt = new Vector3(
+                radius * Mathf.Cos(theta) * Mathf.Sin(alpha),
+                radius * Mathf.Sin(theta) * Mathf.Sin(alpha),
+                radius * Mathf.Cos(alpha)
+            );
+
+            // translation to match the parent position
+            pt += transform.position;
+
+            attractionPointsBranches.Add(pt);
+        }
+    }
+    public List<int> _activeAttractors = new List<int>();
     List<Limb> branches = new List<Limb>();
     List<Limb> branchExtremities = new List<Limb>();
     List<Limb> roots = new List<Limb>();
@@ -83,7 +125,6 @@ public class Generate : MonoBehaviour
     int leavesCount;
     Vector3 position;
 
-    //From https://github.com/bcrespy/unity-growing-tree/blob/master/Assets/Scripts/Generator.cs
     Vector3 RandomGrowthVector()
     {
         float alpha = Random.Range(0f, Mathf.PI);
@@ -226,6 +267,7 @@ public class Generate : MonoBehaviour
 
     void initiliazeMatureKauri()
     {
+        _filter = GetComponent<MeshFilter>();
         float bareTrunk = trunkHeight * 0.7f; //portion of trunk to have no branches
         if (generateRoots)
         {
@@ -238,6 +280,7 @@ public class Generate : MonoBehaviour
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
         growTrunk(position.y + trunkHeight); //grow trunk to the trunk height
+       
     }
 
     void initializeYoungKauri()
@@ -254,19 +297,23 @@ public class Generate : MonoBehaviour
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
         growTrunk(position.y + trunkHeight);    //grow trunk to the trunk height
+        _filter = GetComponent<MeshFilter>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         position = transform.position;
+        
         switch (stage)
         {
             case TreeStage.Mature:
                 initiliazeMatureKauri();
+                _filter = GetComponent<MeshFilter>();
                 break;
             case TreeStage.Young:
                 initializeYoungKauri();
+                _filter = GetComponent<MeshFilter>();
                 break;
             case TreeStage.Ricker:
                 //TODO
@@ -306,7 +353,122 @@ public class Generate : MonoBehaviour
                 leaves.Add(current);
             }
         }
-        
+        ToMesh();
+    }
+    void ToMesh()
+    {
+        Mesh treeMesh = new Mesh();
+
+        // we first compute the size of each branch 
+        for (int i = branches.Count - 1; i >= 0; i--)
+        {
+            float size = 0f;
+            Limb b = branches[i];
+            if (b.children.Count == 0)
+            {
+                size = _extremitiesSize;
+            }
+            else
+            {
+                foreach (Limb bc in b.children)
+                {
+                    size += Mathf.Pow(bc.size, invertGrowth);
+                }
+                size = Mathf.Pow(size, 1f / invertGrowth);
+            }
+            b.size = size;
+        }
+
+        Vector3[] vertices = new Vector3[(branches.Count + 1) * radialSubdivisions];
+        int[] triangles = new int[branches.Count * radialSubdivisions * 6];
+
+        // construction of the vertices 
+        for (int i = 0; i < branches.Count; i++)
+        {
+            Limb b = branches[i];
+
+            // the index position of the vertices
+            int vid = radialSubdivisions * i;
+            b._verticesId = vid;
+
+            // quaternion to rotate the vertices along the branch direction
+            Quaternion quat = Quaternion.FromToRotation(Vector3.up, b.direction);
+
+            // construction of the vertices 
+            for (int s = 0; s < radialSubdivisions; s++)
+            {
+                // radial angle of the vertex
+                float alpha = ((float)s / radialSubdivisions) * Mathf.PI * 2f;
+
+                // radius is hard-coded to 0.1f for now
+                Vector3 pos = new Vector3(Mathf.Cos(alpha) * b.size, 0, Mathf.Sin(alpha) * b.size);
+                pos = quat * pos; // rotation
+
+                // if the branch is an extremity, we have it growing slowly
+                if (b.children.Count == 0 && !b.grown)
+                {
+                    
+                }
+                else
+                {
+                    pos += b.end;
+                }
+
+                vertices[vid + s] = pos - transform.position; // from tree object coordinates to [0; 0; 0]
+
+                // if this is the tree root, vertices of the base are added at the end of the array 
+                if (b.parent == null)
+                {
+                    vertices[branches.Count * radialSubdivisions + s] = b.start + new Vector3(Mathf.Cos(alpha) * b.size, 0, Mathf.Sin(alpha) * b.size) - transform.position;
+                }
+            }
+        }
+
+        // faces construction; this is done in another loop because we need the parent vertices to be computed
+        for (int i = 0; i < branches.Count; i++)
+        {
+            Limb b = branches[i];
+            int fid = i * radialSubdivisions * 2 * 3;
+            // index of the bottom vertices 
+            int bId = b.parent != null ? b.parent._verticesId : branches.Count * radialSubdivisions;
+            // index of the top vertices 
+            int tId = b._verticesId;
+
+            // construction of the faces triangles
+            for (int s = 0; s < radialSubdivisions; s++)
+            {
+                // the triangles 
+                triangles[fid + s * 6] = bId + s;
+                triangles[fid + s * 6 + 1] = tId + s;
+                if (s == radialSubdivisions - 1)
+                {
+                    triangles[fid + s * 6 + 2] = tId;
+                }
+                else
+                {
+                    triangles[fid + s * 6 + 2] = tId + s + 1;
+                }
+
+                if (s == radialSubdivisions - 1)
+                {
+                    // if last subdivision
+                    triangles[fid + s * 6 + 3] = bId + s;
+                    triangles[fid + s * 6 + 4] = tId;
+                    triangles[fid + s * 6 + 5] = bId;
+                }
+                else
+                {
+                    triangles[fid + s * 6 + 3] = bId + s;
+                    triangles[fid + s * 6 + 4] = tId + s + 1;
+                    triangles[fid + s * 6 + 5] = bId + s + 1;
+                }
+            }
+        }
+
+        treeMesh.vertices = vertices;
+        treeMesh.triangles = triangles;
+        treeMesh.RecalculateNormals();
+        _filter.mesh = treeMesh;
     }
 
     private void OnDrawGizmos() //for drawing in the scene view
