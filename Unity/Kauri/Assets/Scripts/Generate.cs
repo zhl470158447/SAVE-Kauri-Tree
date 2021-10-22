@@ -30,7 +30,7 @@ public class Generate : MonoBehaviour
             this.direction = direction;
             this.parent = parent;
             this.type = type;
-            if(parent == null)
+            if (parent == null)
             {
                 distanceFromRoot = 0;
             }
@@ -56,12 +56,12 @@ public class Generate : MonoBehaviour
 
     [Header("Branch parameters")]
     public float radiusB = 5f;
-    public float segmentLengthB=0.2f;
-    public float killDistanceB=0.5f;
+    public float segmentLengthB = 0.2f;
+    public float killDistanceB = 0.5f;
     public int numAttracionPointsB = 400;
 
     [Header("Root parameters")]
-    public bool generateRoots=true;
+    public bool generateRoots = true;
     public float radiusR = 5f;
     public float segmentLengthR = 0.2f;
     public float killDistanceR = 0.5f;
@@ -142,9 +142,9 @@ public class Generate : MonoBehaviour
 
     Quaternion randomRotation() //returns a random rotation in all 3 axes
     {
-        float x = Random.Range(-Mathf.PI/2, Mathf.PI/2);
-        float y = Random.Range(-Mathf.PI/2, Mathf.PI/2);
-        float z = Random.Range(-Mathf.PI/2, Mathf.PI/2);
+        float x = Random.Range(-Mathf.PI / 2, Mathf.PI / 2);
+        float y = Random.Range(-Mathf.PI / 2, Mathf.PI / 2);
+        float z = Random.Range(-Mathf.PI / 2, Mathf.PI / 2);
         return Quaternion.Euler(x, y, z);
     }
 
@@ -170,15 +170,16 @@ public class Generate : MonoBehaviour
         {
             type = limbType.branch;
             
+
         }
-        if (attractors.Count>0)
+        if (attractors.Count > 0)
         {
             bool attractionActive = false;
-            
+
             List<Vector3> pointsToRemove = new List<Vector3>();
             foreach (Vector3 point in attractors)
             {
-                Limb closest=null;
+                Limb closest = null;
                 float closestDistance = int.MaxValue;
                 foreach (Limb l in limbs)
                 {
@@ -206,9 +207,9 @@ public class Generate : MonoBehaviour
                     closest.attractors.Add(point); //set attractor of closest limb equal to this point
                 }
             }
-            foreach(Vector3 point in pointsToRemove) //remove points from within kill distance
+            foreach (Vector3 point in pointsToRemove) //remove points from within kill distance
             {
-                attractors.Remove(point); 
+                attractors.Remove(point);
 
             }
             if (attractionActive)
@@ -255,18 +256,18 @@ public class Generate : MonoBehaviour
                     extremities[i] = current;
                     l.children.Add(current);
                 }
-            } 
+            }
         }
-        else if(!roots && !leavesGenerated) //branches have grown, add leaves if none have been added yet (only apply to branches)
+        else if (!roots && !leavesGenerated) //branches have grown, add leaves if none have been added yet (only apply to branches)
         {
             leavesGenerated = true;
-            foreach(Limb l in extremities) //start by adding leaves at the end of each branch
+            foreach (Limb l in extremities) //start by adding leaves at the end of each branch
             {
                 leaves.Add(Instantiate(leafObject, l.end, Quaternion.LookRotation(l.direction)));
             }
             leavesCount = leaves.Count;
         }
-        
+
     }
 
     void initiliazeMatureKauri()
@@ -284,9 +285,9 @@ public class Generate : MonoBehaviour
         attractionPointsBranches = attrDist.GenerateAttractorsMatureBranches(numAttracionPointsB, radiusB, position + new Vector3(0, bareTrunk, 0));
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
-        
+
         growTrunk(position.y + trunkHeight); //grow trunk to the trunk height
-       
+
     }
 
     void initializeYoungKauri()
@@ -299,7 +300,7 @@ public class Generate : MonoBehaviour
             rootExtremities.Add(baseRoot);
         }
         float bareTrunk = trunkHeight * .2f; //portion of trunk to have no branches
-        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, trunkHeight - bareTrunk, position+new Vector3(0,bareTrunk,0));
+        attractionPointsBranches = attrDist.GenerateAttractorsCone(numAttracionPointsB, trunkHeight - bareTrunk, position + new Vector3(0, bareTrunk, 0));
         Limb baseBranch = new Limb(position, position + new Vector3(0, segmentLengthB, 0), new Vector3(0, segmentLengthB, 0), null, limbType.trunk); //initial trunk piece, straight upwards
         branches.Add(baseBranch);
         growTrunk(position.y + trunkHeight);    //grow trunk to the trunk height
@@ -310,17 +311,17 @@ public class Generate : MonoBehaviour
     void Start()
     {
         position = transform.position;
-        
+
         switch (stage)
         {
             case TreeStage.Mature:
-                initiliazeMatureKauri();      
+                initiliazeMatureKauri();
                 _filter = GetComponent<MeshFilter>();
                 ToMesh();
                 break;
             case TreeStage.Young:
                 initializeYoungKauri();
-                
+
                 _filter = GetComponent<MeshFilter>();
                 break;
             case TreeStage.Ricker:
@@ -332,7 +333,8 @@ public class Generate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (generateRoots && attractionPointsRoots.Count>0) //roots need to be generated
+        ToMesh();
+        if (generateRoots && attractionPointsRoots.Count > 0) //roots need to be generated
         {
             growLimbs(roots, rootExtremities, attractionPointsRoots, killDistanceR, segmentLengthR, true);
         }
@@ -340,11 +342,11 @@ public class Generate : MonoBehaviour
         {
             growLimbs(branches, branchExtremities, attractionPointsBranches, killDistanceB, segmentLengthB, false);
         }
-        else if(diebackSlider>0 || removedLeaves.Count>0) //dieback active
+        else if (diebackSlider > 0 || removedLeaves.Count > 0) //dieback active
         {
             int toRemove = (int)((diebackSlider / 100.0f) * leavesCount); //find what number of leaves should be removed for current dieback level
             int currentLeaves = leavesCount - toRemove;
-            while(currentLeaves < leaves.Count) //too many, remove
+            while (currentLeaves < leaves.Count) //too many, remove
             {
                 int index = Random.Range(0, leaves.Count); //pick randomly from leaves
                 GameObject current = leaves[index];
@@ -352,7 +354,7 @@ public class Generate : MonoBehaviour
                 current.SetActive(false); //keep game objects, just disable
                 removedLeaves.Add(current); //keep track of removed so they can be reenabled and added back
             }
-            while(currentLeaves > leaves.Count) //not enough, add (basically the opposite of removal)
+            while (currentLeaves > leaves.Count) //not enough, add (basically the opposite of removal)
             {
                 int index = Random.Range(0, removedLeaves.Count); //pick randomly from removed
                 GameObject current = removedLeaves[index];
@@ -360,9 +362,9 @@ public class Generate : MonoBehaviour
                 current.SetActive(true); //re-enable game object
                 leaves.Add(current);
             }
-        }
-        
+        }       
     }
+
     void ToMesh()
     {
         Mesh treeMesh = new Mesh();
@@ -370,7 +372,7 @@ public class Generate : MonoBehaviour
         // we first compute the size of each branch 
         for (int i = branches.Count - 1; i >= 0; i--)
         {
-            float size = 0.02f;
+            float size = 0f;
             Limb b = branches[i];
             if (b.children.Count == 0)
             {
@@ -415,22 +417,26 @@ public class Generate : MonoBehaviour
                 // if the branch is an extremity, we have it growing slowly
                 if (b.children.Count == 0 && !b.grown)
                 {
-                    
+
                 }
                 else
                 {
                     pos += b.end;
                 }
-
-                vertices[vid + s] = pos - transform.position; // from tree object coordinates to [0; 0; 0]
-
-                // if this is the tree root, vertices of the base are added at the end of the array 
-                if (b.parent == null)
+                if (b.type == limbType.trunk)
                 {
-                    vertices[branches.Count * radialSubdivisions + s] = b.start + new Vector3(Mathf.Cos(alpha) * b.size, 0, Mathf.Sin(alpha) * b.size) - transform.position;
+                    vertices[vid + s] = pos - transform.position;
                 }
+                else {
+                    vertices[vid + s] = b.end + new Vector3(Mathf.Cos(alpha) * b.size, 0, Mathf.Sin(alpha) * b.size) - transform.position; 
+                }
+                // from tree object coordinates to [0; 0; 0]
+                //Mathf.Sin(alpha) * b.size
+
+
             }
         }
+    
 
         // faces construction; this is done in another loop because we need the parent vertices to be computed
         for (int i = 0; i < branches.Count; i++)
@@ -477,45 +483,5 @@ public class Generate : MonoBehaviour
         treeMesh.triangles = triangles;
         treeMesh.RecalculateNormals();
         _filter.mesh = treeMesh;
-    }
-
-    private void OnDrawGizmos() //for drawing in the scene view
-    {
-        foreach(Limb b in branches)
-        {
-            if(b.type == limbType.trunk)
-            {
-                Gizmos.color = Color.black;   
-            }
-            else
-                Gizmos.color = Color.green;
-                
-            Gizmos.DrawLine(b.start, b.end);
-        }
-        foreach (Limb r in roots)
-        {
-            Gizmos.color = Color.gray;
-            Gizmos.DrawLine(r.start, r.end);
-        }
-        foreach (Vector3 pt in attractionPointsRoots)
-        {
-            Gizmos.color = Color.black;
-            Gizmos.DrawSphere(pt, 0.05f);
-        }
-        foreach (Vector3 pt in attractionPointsBranches)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(pt, 0.05f);
-        }
-       /* foreach(Limb l in branchExtremities)
-        {
-            Gizmos.color = new Color(0.4f, 0.4f, 0.4f, 0.4f);
-            Gizmos.DrawSphere(l.end, attractionRange);
-        }
-        foreach(Limb l in rootExtremities)
-        {
-            Gizmos.color = new Color(0.4f, 0.4f, 0.4f, 0.4f);
-            Gizmos.DrawSphere(l.end, attractionRange);
-        }*/
     }
 }
