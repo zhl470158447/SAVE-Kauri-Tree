@@ -15,3 +15,6 @@ There are 3 different scenes:
 - Comparison: Contains both hand made and procedural. Press run to generate the procedural.
 
 The procedural models are currently just skeletons that get leaves, there is no mesh for the trunk. The skeletons are visible in the scene view if gizmos are enabled.
+It is reccomened to use the scene view to inspect the models as there is no camera control in the game view.
+
+The branch `mesh-problem` has an implementation for generating meshes, but it is not finalized.
